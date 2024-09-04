@@ -15,9 +15,10 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const { Header, Content, Sider } = Layout;
 
+// Adjust route mapping according to the updated paths
 const KeyRouteMap: Record<string, string> = {
   DASHBOARD: "/dashboard",
-  CONTACT: "/dashboard/contact",
+  CONTACT: "/contacts",
 };
 
 const profileItems = [
@@ -57,7 +58,7 @@ export const DashboardLayout = () => {
     if (info.key === "LOGOUT") {
       logout(); // Log out the user
       queryClient.clear(); // Clear the cache
-      navigate("/login"); // Redirect to login page on logout
+      navigate("/"); // Redirect to login page on logout
     }
   };
 
