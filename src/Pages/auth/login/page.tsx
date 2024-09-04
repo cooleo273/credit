@@ -10,18 +10,29 @@ interface LoginFormValues {
   password: string;
 }
 
+interface LoginResponse {
+  token: string;
+  // other fields if any
+}
+
 const Login: FC = () => {
   const navigate = useNavigate();
 
   const onFinish = async (values: LoginFormValues) => {
     try {
-      const response = await axios.post("/api/login", values);
+      // Send a POST request to the login API with the username and password
+      const response = await axios.post<LoginResponse>("http://localhost:5000/api/users/login", values);
+
+      // If login is successful, display a success message
       message.success("Login successful!");
 
+      // Store the received token in localStorage
       localStorage.setItem("token", response.data.token);
 
+      // Navigate to the dashboard or desired route after login
       navigate("/dashboard");
     } catch (error) {
+      // If login fails, display an error message
       message.error("Login failed, please check your credentials.");
     }
   };
@@ -32,13 +43,12 @@ const Login: FC = () => {
         <img style={styles.image} src={img} alt="Login" />
       </div>
       <div style={styles.formContainer}>
-        <Typography.Title level={2} >
+        <Typography.Title level={2} style={styles.title}>
           Login
         </Typography.Title>
         <Form
           name="login"
           onFinish={onFinish}
-          initialValues={{ remember: true }}
           layout="vertical"
           style={styles.form}
         >
@@ -71,7 +81,7 @@ const Login: FC = () => {
               Log in
             </Button>
           </Form.Item>
-          <Typography.Text >
+          <Typography.Text style={styles.signUpText}>
             Don't have an account? <Link to="/signup" style={styles.signUpLink}>Sign up</Link>
           </Typography.Text>
         </Form>
@@ -112,7 +122,7 @@ const styles = {
     overflow: "hidden", // Ensures the form stays within the container
   },
   title: {
-    textAlign: "center",
+    
     marginBottom: "30px",
   },
   form: {
@@ -133,7 +143,7 @@ const styles = {
     fontWeight: "bold",
   },
   signUpText: {
-    textAlign: "center",
+    
     display: "block",
     marginTop: "20px",
   },

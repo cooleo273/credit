@@ -2,26 +2,30 @@ import React from "react";
 import { Button, Form, Input, Typography, message } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 
 interface SignUpFormValues {
   username: string;
   password: string;
   email: string;
+  contact_number: string; // Add this field here
 }
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
 
-  const onFinish = async (values: SignUpFormValues) => {
-    try {
-      // Simulate API request for signup
-      console.log("Sign up form values:", values);
-      message.success("Sign-up successful!");
-      navigate("/");
-    } catch (error) {
-      message.error("Sign-up failed, please try again.");
-    }
+  const onFinish = (values: SignUpFormValues) => {
+    axios
+      .post("http://localhost:5000/api/users/register", values)
+      .then((response) => {
+        console.log(response);
+        message.success("Sign-up successful!");
+        navigate("/"); // Navigate only after successful response
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        message.error("Sign-up failed, please try again.");
+      });
   };
 
   return (
@@ -35,14 +39,24 @@ const SignUp: React.FC = () => {
             name="username"
             rules={[{ required: true, message: "Please input your Username!" }]}
           >
-            <Input prefix={<UserOutlined style={styles.icon}/>} placeholder="Username" size="large" style={styles.input} />
+            <Input
+              prefix={<UserOutlined style={styles.icon} />}
+              placeholder="Username"
+              size="large"
+              style={styles.input}
+            />
           </Form.Item>
 
           <Form.Item
             name="email"
             rules={[{ required: true, message: "Please input your Email!" }]}
           >
-            <Input prefix={<MailOutlined  style={styles.icon}/>} placeholder="Email" size="large" style={styles.input}/>
+            <Input
+              prefix={<MailOutlined style={styles.icon} />}
+              placeholder="Email"
+              size="large"
+              style={styles.input}
+            />
           </Form.Item>
 
           <Form.Item
@@ -56,9 +70,29 @@ const SignUp: React.FC = () => {
               style={styles.input}
             />
           </Form.Item>
+          
+          <Form.Item
+            name="contact_number"
+            rules={[
+              { required: true, message: "Please input your contact number!" },
+            ]}
+          >
+            <Input
+              prefix={<LockOutlined style={styles.icon} />}
+              placeholder="Contact Number"
+              size="large"
+              style={styles.input}
+            />
+          </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block size="large" style={styles.button}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              size="large"
+              style={styles.button}
+            >
               Sign Up
             </Button>
           </Form.Item>
@@ -74,50 +108,46 @@ const SignUp: React.FC = () => {
 };
 
 const styles = {
-    container: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100vh",
-      backgroundColor: "#f0f2f5",
-      padding: "0 10rem",
-      overflow: "hidden", // Prevents scrolling
-    }as React.CSSProperties,
-    formContainer: {
-      flex: 3,
-      maxWidth: 400,
-      padding: "40px",
-      backgroundColor: "#fff",
-      borderRadius: "8px",
-      boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-      overflow: "hidden", // Ensures the form stays within the container
-    }as React.CSSProperties,
-    title: {
-      textAlign: "center",
-      marginBottom: "30px",
-    }as React.CSSProperties,
-    form: {
-      width: "100%",
-    }as React.CSSProperties,
-    input: {
-      borderRadius: "6px",
-      padding: "10px",
-      border: "none",
-      borderBottom: "1px solid",
-      color: "rgba(0, 0, 0, 0.88)",
-  
-    }as React.CSSProperties,
-    icon: {
-      color: "#1890ff",
-    }as React.CSSProperties,
-    button: {
-      borderRadius: "6px",
-      fontWeight: "bold",
-    }as React.CSSProperties,
-    loginLink: {
-        display: "block",
-        textAlign: "center",
-      } as React.CSSProperties, 
-  };
+  container: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100vh",
+    backgroundColor: "#f0f2f5",
+    padding: "0 10rem",
+    overflow: "hidden",
+  } as React.CSSProperties,
+  formContainer: {
+    flex: 3,
+    maxWidth: 400,
+    padding: "40px",
+    backgroundColor: "#fff",
+    borderRadius: "8px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+    overflow: "hidden",
+  } as React.CSSProperties,
+  title: {
+    textAlign: "center",
+    marginBottom: "30px",
+  } as React.CSSProperties,
+  input: {
+    borderRadius: "6px",
+    padding: "10px",
+    border: "none",
+    borderBottom: "1px solid",
+    color: "rgba(0, 0, 0, 0.88)",
+  } as React.CSSProperties,
+  icon: {
+    color: "#1890ff",
+  } as React.CSSProperties,
+  button: {
+    borderRadius: "6px",
+    fontWeight: "bold",
+  } as React.CSSProperties,
+  loginLink: {
+    display: "block",
+    textAlign: "center",
+  } as React.CSSProperties,
+};
 
 export default SignUp;

@@ -1,17 +1,24 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { AuthGuard, DashboardLayout } from "./components/layout";
 import Login from "./Pages/auth/login/page";
-import SignUp from "./Pages/auth/signup/page";
+import Contact from "./Pages/contacts/page";
 
-export const App: React.FC = () => {
+function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<div>Dashboard</div>} /> 
-        <Route path="/signup" element={<SignUp />} /> {/* Corrected this line */}
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route
+        path="/dashboard"
+        element={
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>
+        }
+      >
+        <Route path="contacts" element={<Contact />} />
+      </Route>
+    </Routes>
   );
-};
+}
 
+export default App;
