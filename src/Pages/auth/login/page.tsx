@@ -4,6 +4,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import img from "../../../assets/login.png";
+import { useAuth } from "../../../components/guard/AuthContext";
 
 interface LoginFormValues {
   username: string;
@@ -18,24 +19,25 @@ interface LoginResponse {
 const Login: FC = () => {
   const navigate = useNavigate();
 
-  const onFinish = async (values: LoginFormValues) => {
-    try {
-      // Send a POST request to the login API with the username and password
-      const response = await axios.post<LoginResponse>("http://localhost:5000/api/users/login", values);
+  // Example:
+const { login } = useAuth();
 
-      // If login is successful, display a success message
-      message.success("Login successful!");
+const onFinish = async (values: LoginFormValues) => {
+  try {
+    const response = await axios.post<LoginResponse>("http://localhost:5000/api/users/login", values);
 
-      // Store the received token in localStorage
-      localStorage.setItem("token", response.data.token);
+    message.success("Login successful!");
 
-      // Navigate to the dashboard or desired route after login
-      navigate("/dashboard");
-    } catch (error) {
-      // If login fails, display an error message
-      message.error("Login failed, please check your credentials.");
-    }
-  };
+    // Save token in context and localStorage
+    login(response.data.token);
+    localStorage.setItem("token", response.data.token);
+
+    navigate("/dashboard");
+  } catch (error) {
+    message.error("Login failed, please check your credentials.");
+  }
+};
+
 
   return (
     <div style={styles.container}>

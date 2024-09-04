@@ -1,17 +1,7 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import {
-  Avatar,
-  Button,
-  Card,
-  Dropdown,
-  Layout,
-  Menu,
-  Space,
-  Typography,
-} from "antd";
+import { Avatar, Button, Card, Dropdown, Layout, Menu, Space, Typography } from "antd";
 import { useState } from "react";
 import {
-  AiOutlineUsergroupAdd,
   AiOutlineUser,
   AiOutlineMenuFold,
   AiOutlineMenuUnfold,
@@ -19,7 +9,7 @@ import {
   AiOutlineDown,
 } from "react-icons/ai";
 import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlineSpaceDashboard, MdOutlineLeaderboard } from "react-icons/md";
+import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { useAuth } from "../../guard/AuthContext"; // Adjust the path accordingly
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -27,7 +17,7 @@ const { Header, Content, Sider } = Layout;
 
 const KeyRouteMap: Record<string, string> = {
   DASHBOARD: "/dashboard",
-  CONTACT: "/dashboard/contact"
+  CONTACT: "/dashboard/contact",
 };
 
 const profileItems = [
@@ -44,7 +34,6 @@ const items = [
     key: "DASHBOARD",
     icon: <MdOutlineSpaceDashboard />,
   },
-  
   {
     label: "Contact",
     key: "CONTACT",
@@ -58,7 +47,7 @@ export const DashboardLayout = () => {
   const queryClient = useQueryClient();
   const [collapsed, setCollapsed] = useState(false);
 
-  const { setToken } = useAuth();
+  const { logout } = useAuth(); // Correctly use the logout method
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -66,8 +55,8 @@ export const DashboardLayout = () => {
 
   const handleClick = (info: any) => {
     if (info.key === "LOGOUT") {
-      setToken(null);
-      queryClient.clear();
+      logout(); // Log out the user
+      queryClient.clear(); // Clear the cache
       navigate("/login"); // Redirect to login page on logout
     }
   };
